@@ -100,7 +100,6 @@ def setup_and_run_argparser():
     parser = argparse.ArgumentParser(description='Control Dooya (and derivatives) window shutter motors over their 433MHz RF protocol.')
     parser.add_argument('command', metavar='command', type=str, nargs=1, help='the command to execute', choices=['up', 'down', 'stop', 'learn', 'pair', 'change_direction'])
     parser.add_argument('-r', '--remote-id', dest="remote_id", type=int, default=0x42, help='the id of the remote control we are emulating')
-    parser.add_argument('-g', '--group', dest="group", type=int, default=0x1f, help='the group to send for')
     parser.add_argument('-c', '--channel', dest="channel", type=int, default=1, help='the channel to send on')
     return parser.parse_args()
 
