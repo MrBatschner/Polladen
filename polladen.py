@@ -18,7 +18,7 @@ delay_between_sequence = 7400
 delay_between_presses  = 20000
 
 # Raspberry Pi GPIO settings
-rf_transmit_pin = 17
+rf_transmit_pin       = 17
 
 # command identifiers
 command_shutter_up    = 0x11    # 0001 0001 
@@ -79,6 +79,9 @@ def stop(header: int):
 def learn(header: int):
     send_command(header=header, command=command_learn, invert=False)
 
+def p2(header: int):
+    learn(header=header)
+
 
 def pair(header: int):
     learn(header)
@@ -98,7 +101,7 @@ def change_direction(header: int):
 
 def setup_and_run_argparser():
     parser = argparse.ArgumentParser(description='Control Dooya (and derivatives) window shutter motors over their 433MHz RF protocol.')
-    parser.add_argument('command', metavar='command', type=str, nargs=1, help='the command to execute', choices=['up', 'down', 'stop', 'learn', 'pair', 'change_direction'])
+    parser.add_argument('command', metavar='command', type=str, nargs=1, help='the command to execute', choices=['up', 'down', 'stop', 'learn', 'p2', 'pair', 'change_direction'])
     parser.add_argument('-r', '--remote-id', dest="remote_id", type=int, default=0x42, help='the id of the remote control we are emulating')
     parser.add_argument('-c', '--channel', dest="channel", type=int, default=1, help='the channel to send on')
     return parser.parse_args()
