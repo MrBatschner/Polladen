@@ -9,6 +9,7 @@ import sys
 import time
 import RPi.GPIO as GPIO
 
+import pidfile
 
 # timing constants
 delays_command_bit_0   = [320, 620]
@@ -104,6 +105,7 @@ def setup_and_run_argparser():
     parser.add_argument('command', metavar='command', type=str, nargs=1, help='the command to execute', choices=['up', 'down', 'stop', 'learn', 'p2', 'pair', 'change_direction'])
     parser.add_argument('-r', '--remote-id', dest="remote_id", type=int, default=0x42, help='the id of the remote control we are emulating')
     parser.add_argument('-c', '--channel', dest="channel", type=int, default=1, help='the channel to send on')
+    parser.add_argument('--pidfile', dest="pidfile", type=str, default='polladen.pid', help='location of the PID file')
     return parser.parse_args()
 
 
@@ -115,12 +117,16 @@ def setup_raspberry_pi_gpio():
 
 if __name__ == '__main__':
     args = setup_and_run_argparser()
+
+    pidfile = pidfile.Pidfile(args.pidfile)
+    pidfile.check_wait_and_create()
     setup_raspberry_pi_gpio()
 
     header = 0x1f << 32 | (args.remote_id & 0xffff) << 16 | 0xff << 12 | (args.channel & 0x0f) << 8
-    
+
     module_symbols = sys.modules[__name__]
-    func = getattr(module_symbols, args.command[0], None) 
+    func = getattr(module_symbols, args.command[0], None)
     func(header=header)
 
     GPIO.cleanup()
+    pidfile.remove()
