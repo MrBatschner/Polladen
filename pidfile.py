@@ -8,6 +8,7 @@ class Pidfile:
     def __init__(self, filename: str, retry_timeout_seconds: int = 5):
         self.filename = filename
         self.retry_timeout_seconds = retry_timeout_seconds
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     def __del__(self):
         self.remove()
@@ -43,7 +44,7 @@ class Pidfile:
             os.remove(self.filename)
 
 
-    def check_and_wait(self, number_of_retries: int = 5):
+    def check_and_wait(self, max_retries: int = 5):
         retry_count = 0
 
         while self.check_exists():
@@ -56,13 +57,13 @@ class Pidfile:
                 self.remove()
                 break
 
-            if retry_count > number_of_retries:
+            if retry_count > max_retries:
                 time_waited = retry_count * self.retry_timeout_seconds
                 raise Exception(f'PID file {self.filename} existed for the past {time_waited} seconds - giving up.')
 
             time.sleep(self.retry_timeout_seconds)
 
 
-    def check_wait_and_create(self, number_of_retries: int = 5):
-        self.check_and_wait(number_of_retries=number_of_retries)
+    def check_wait_and_create(self, max_retries: int = 5):
+        self.check_and_wait(max_retries=max_retries)
         self.create()
