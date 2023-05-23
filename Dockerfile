@@ -19,8 +19,8 @@ RUN gcc -c -I/bcm2835-1.71/src -o polladen.o polladen.c \
     && strip polladen
 
 
-####### Add polladen to Home-Assistant
+####### Polladen container
 
-FROM homeassistant/raspberrypi4-homeassistant:stable
+FROM alpine:latest
 
-COPY --from=polladen-builder --chmod=0755 /polladen/polladen /polladen/polladen
+COPY --from=polladen-builder /polladen/polladen /usr/bin/polladen

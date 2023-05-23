@@ -4,38 +4,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
-#include "bcm2835.h"
 
+#include <bcm2835.h>
+#include "polladen.h"
 
-/* definition of the command identifiers */
-#define COMMAND_SHUTTER_UP      0x11
-#define COMMAND_SHUTTER_DOWN    0x33
-#define COMMAND_SHUTTER_STOP    0x55
-#define COMMAND_SHUTTER_LEARN   0xcc
-
-#define DATAGRAM_REPEAT         5
-
-/* the Raspberry Pi GPIO pin the RF transmitter is connected to */
-#define BCM_TRANSMIT_PIN        17
-
-/* I like boolean names */
-#define BOOLEAN uint8_t
-#define TRUE    1
-#define FALSE   0
-
-/* timings for the 433MHz RF transmitter in microseconds */
-const uint32_t delays_bit_0[] = {320, 620};
-const uint32_t delays_bit_1[] = {620, 320};
-const uint32_t delays_start_of_transmission[] = {4500, 1400};
-
-const uint32_t delay_between_datagrams = 7400;
-const uint32_t delay_between_transmissions = 20000;
-
-typedef struct transmission {
-    uint32_t header;
-    uint8_t command;
-    BOOLEAN invert;
-} transmission_t;
 
 typedef struct cmdline_parameters {
     int32_t remote_id;
@@ -104,8 +76,10 @@ void print_help() {
     printf("  -h, --help            show this help message and exit\n");
     printf("  -r REMOTE_ID, --remote-id REMOTE_ID\n");
     printf("                        the id of the remote control we are emulating\n");
+    printf("                          any value between 1 and 65535)\n");
     printf("  -c CHANNEL, --channel CHANNEL\n");
-    printf("                        the channel to send on\n");
+    printf("                        the channel to send on - any value between 0 and 15\n");
+    printf("                          channel 0 is a the group channel\n");
 }
 
 int parse_argv(int argc, char* argv[], cmdline_parameters_t *p) {
@@ -132,7 +106,7 @@ int parse_argv(int argc, char* argv[], cmdline_parameters_t *p) {
         }
     }
 
-    if (remote_id < 1 || channel < 0 || argc - optind != 1) {
+    if (remote_id < 1 || remote_id > 65535 || channel < 0 || channel > 15 || argc - optind != 1) {
         print_help();
         return EXIT_FAILURE;
     }
