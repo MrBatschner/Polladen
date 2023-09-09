@@ -10,14 +10,15 @@ The intention is to control these motors from a Raspberry Pi which has a simple 
 
 Other than the Python implementation of Polladen, this C rewrite does not support the `pair` or `change-direction` command.
 
-The name _polladen_ is for **P**ython R**olladen** (German for shutter) - even though this is a C rewrite, the original is written in Python and _collade_ sounds even stupider.
-
+The name _polladen_ is for **P**ython R**olladen** (German for shutter) - even though this is a C rewrite, the original is written in Python and _colladen_ sounds even stupider.
 
 ## Setup
 
 1. You need a Raspberry Pi
 
 1. You need one of these cheap 433MHz transmitters/receivers you can find on eBay, Amazon, etc. A small PCB with one or two coils and a coin-shaped component on it.
+
+    <img src="img/rf433tx.jpg" width="480" height="270"/>
 
 1. Connect your 433MHz transmitter to the GPIO header of your Raspberry Pi
    These simple transmitters have three pins, `GND`, `VCC` and `ADAT`. 
