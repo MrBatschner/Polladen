@@ -8,12 +8,16 @@ The intention is to control these motors from a Raspberry Pi which has a simple 
 
 The name _polladen_ is for **P**ython R**olladen** (German for shutter).
 
+There is a C implementation of _Polladen_ that lacks a few features but compiles into a small binary of only a few kilo-bytes inside the [`polladen-in-c` branch](https://github.com/MrBatschner/Polladen/tree/polladen-in-c).
+
 
 ## Setup
 
 1. You need a Raspberry Pi
 
 1. You need one of these cheap 433MHz transmitters/receivers you can find on eBay, Amazon, etc. A small PCB with one or two coils and a coin-shaped component on it.
+
+    <img src="img/rf433tx.jpg" width="480" height="270"/>
 
 1. Connect your 433MHz transmitter to the GPIO header of your Raspberry Pi
    These simple transmitters have three pins, `GND`, `VCC` and `ADAT`. 
@@ -88,6 +92,7 @@ optional arguments:
                         the id of the remote control we are emulating
   -g GROUP, --group GROUP
                         the group to send for
+  --pidfile PIDFILE     location of the PID file
 ```
 
 As command, you can supply one of the following:
@@ -102,6 +107,10 @@ As command, you can supply one of the following:
 | `pair` | Pairs _polladen_  with the given remote-id and channel-id to a motor (see your motors instruction manual) |
 | `change-direction` | Changes the direction of the motor for up and down commands (see your motors instruction manual) |
 
+
+## PID files
+
+To prevent several instances of _Polladen_ to run at the same time, it can create and look for a PID file. Use the `--pidfile` command line parameter for that.
 
 ## Examples
 
